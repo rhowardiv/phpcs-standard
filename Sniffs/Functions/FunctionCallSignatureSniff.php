@@ -223,7 +223,11 @@ class Snap_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSniffe
                     $foundIndent = strlen($tokens[$i]['content']);
                 }
 
-                if ($expectedIndent !== $foundIndent) {
+				if (
+					$expectedIndent !== $foundIndent
+					// not when chaining a fluent interface
+					&& $tokens[$nextCode]['code'] !== T_OBJECT_OPERATOR
+				) {
                     $error = 'Multi-line function call not indented correctly; expected %s spaces but found %s';
                     $data  = array(
                               $expectedIndent,
