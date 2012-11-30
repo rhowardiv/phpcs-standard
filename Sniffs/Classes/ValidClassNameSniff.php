@@ -76,8 +76,32 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 			$phpcsFile->addError($error, $stackPtr, 'NotCamelCaps', $data);
 		}
 
+		$this->checkBraceSpacing($phpcsFile, $stackPtr);
 	}
 
+	/**
+	 * Check the brace that opens the class is properly positioned
+	 * @param PHP_CodeSniffer_File $phpcsFile
+	 * @param int $stackPtr
+	 */
+	public function checkBraceSpacing(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
+		$tokens = $phpcsFile->getTokens();
+		$opener = $tokens[$stackPtr]['scope_opener'];
+		$i = $opener - 1;
+		$space_count = 0;
+		while ($tokens[$i]['content'] === ' ') {
+			$space_count++;
+			$i--;
+		}
+		if ($space_count !== 1) {
+			$phpcsFile->addError(
+				'1 space expected before opening brace; %d found',
+				$stackPtr,
+				'BadSpaceBeforeClassBrace',
+				array($space_count)
+			);
+		}
+	}
 
 }//end class
 
