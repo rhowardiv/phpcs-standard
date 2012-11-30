@@ -159,7 +159,7 @@ class Snap_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Standa
             $lastChar  = $testShort[(strlen($testShort) - 1)];
             if (substr_count($testShort, $phpcsFile->eolChar) !== 0) {
                 $error = 'Variable comment short description must be on a single line';
-                $phpcsFile->addError($error, ($commentStart + 1), 'ShortSingleLine');
+                $phpcsFile->addWarning($error, ($commentStart + 1), 'ShortSingleLine');
             }
         }//end if
 
