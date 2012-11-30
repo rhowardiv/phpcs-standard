@@ -77,6 +77,7 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 		}
 
 		$this->checkBraceSpacing($phpcsFile, $stackPtr);
+		$this->checkBraceLine($phpcsFile, $stackPtr);
 	}
 
 	/**
@@ -84,7 +85,7 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 	 * @param PHP_CodeSniffer_File $phpcsFile
 	 * @param int $stackPtr
 	 */
-	public function checkBraceSpacing(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
+	protected function checkBraceSpacing(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
 		$tokens = $phpcsFile->getTokens();
 		$opener = $tokens[$stackPtr]['scope_opener'];
 		$i = $opener - 1;
@@ -103,5 +104,20 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 		}
 	}
 
-}//end class
-
+	/**
+	 * Check the brace is on the same line as the class/interface declaration
+	 * @param PHP_CodeSniffer_File $phpcsFile
+	 * @param int $stackPtr
+	 */
+	protected function checkBraceLine(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
+		$tokens = $phpcsFile->getTokens();
+		$opener = $tokens[$stackPtr]['scope_opener'];
+		if ($tokens[$stackPtr]['line'] != $tokens[$opener]['line']) {
+			$phpcsFile->addError(
+				'Opening brace must be on same line as class declaration',
+				$stackPtr,
+				'ClassBraceWrongLine'
+			);
+		}
+	}
+}
