@@ -27,7 +27,7 @@
  * @version   Release: 1.3.4
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff implements PHP_CodeSniffer_Sniff
+class Snap_Sniffs_WhiteSpace_OperatorSpacingSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**
@@ -93,6 +93,8 @@ class Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff implements PHP_CodeSniffer_Sn
             }
         }
 
+		$not_first = $phpcsFile->findFirstOnLine(T_WHITESPACE, $stackPtr + 1, true) !== $stackPtr;
+
         if ($tokens[$stackPtr]['code'] === T_BITWISE_AND) {
             // If it's not a reference, then we expect one space either side of the
             // bitwise operator.
@@ -101,11 +103,11 @@ class Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff implements PHP_CodeSniffer_Sn
             }
 
             // Check there is one space before the & operator.
-            if ($tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
+            if ($not_first && $tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
                 $error = 'Expected 1 space before "&" operator; 0 found';
                 $phpcsFile->addError($error, $stackPtr, 'NoSpaceBeforeAmp');
             } else {
-                if (strlen($tokens[($stackPtr - 1)]['content']) !== 1) {
+                if ($not_first && strlen($tokens[($stackPtr - 1)]['content']) !== 1) {
                     $found = strlen($tokens[($stackPtr - 1)]['content']);
                     $error = 'Expected 1 space before "&" operator; %s found';
                     $data  = array($found);
@@ -177,13 +179,13 @@ class Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff implements PHP_CodeSniffer_Sn
 
         $operator = $tokens[$stackPtr]['content'];
 
-        if ($tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
+        if ($not_first && $tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
             $error = "Expected 1 space before foo \"$operator\"; 0 found";
             $phpcsFile->addError($error, $stackPtr, 'NoSpaceBefore');
         } else if (strlen($tokens[($stackPtr - 1)]['content']) !== 1) {
             // Don't throw an error for assignments, because other standards allow
             // multiple spaces there to align multiple assignments.
-            if (in_array($tokens[$stackPtr]['code'], PHP_CodeSniffer_Tokens::$assignmentTokens) === false) {
+            if ($not_first && in_array($tokens[$stackPtr]['code'], PHP_CodeSniffer_Tokens::$assignmentTokens) === false) {
                 $found = strlen($tokens[($stackPtr - 1)]['content']);
                 $error = 'Expected 1 space before bar "%s"; %s found';
                 $data  = array(
