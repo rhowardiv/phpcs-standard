@@ -92,7 +92,7 @@ class Snap_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 			// static vars just ensure no camelcase (caps allowed)
 			if (preg_match(self::$camelcase, $varName)) {
 				$error = 'Variable "%s" is not in valid underscore format';
-				$phpcsFile->addError($error, $stackPtr, 'MemberNotUnderscore', $errorData);
+				$phpcsFile->addError($error, $stackPtr, 'NotUnderscore', array($varName));
 			}
 			return;
 		}
