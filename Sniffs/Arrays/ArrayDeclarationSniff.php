@@ -363,7 +363,7 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
             $count     = count($indices);
             $lastIndex = $indices[($count - 1)]['value'];
 
-            $trailingContent = $phpcsFile->findPrevious(T_WHITESPACE, ($arrayEnd - 1), $lastIndex, true);
+            $trailingContent = $phpcsFile->findPrevious(array(T_COMMENT, T_WHITESPACE), ($arrayEnd - 1), $lastIndex, true);
             if ($tokens[$trailingContent]['code'] !== T_COMMA) {
                 $error = 'Consider adding a comma after last value in array declaration';
                 $phpcsFile->addWarning($error, $trailingContent, 'NoCommaAfterLast');
