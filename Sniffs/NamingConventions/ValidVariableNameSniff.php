@@ -49,7 +49,7 @@ class Snap_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 	 *
 	 * @var string
 	 */
-	private static $underscore_var = '/^(_|[a-z](?:[a-z0-9]+_?)*)$/';
+	private static $underscore_var = '/^(_|[a-z](?:_?[a-z0-9]+)*)$/';
 
 	/**
 	 * Complementary regex to just exclude camel casing
