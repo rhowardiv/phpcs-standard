@@ -39,3 +39,27 @@ entering the command :Phpcs or \sn (mnemonic: sniff).
 
 Alternatively you can try the Vim Syntastic plugin which will use phpcs
 automatically if it's in your PATH.
+
+Some notes about working in these files
+---------------------------------------
+
+Anyone wanting to update this PHPCS standard could probably use some starting
+advice:
+
+PHPCS operates by tokenizing the file in question then going through every
+token and calling the "Sniffs" that are registered to listen for that token.
+
+PHPCS comes with many standards (including Generic, PEAR, Squiz and Zend). Any
+run of PHPCS follows exactly one standard.
+
+You configure which standard you want to run in CodeSniffer.conf in the root
+directory of the PHPCS installation.
+
+All the Sniffs in the standard you select will be run. The Standard has a
+ruleset.xml file in its top directory that can include Sniffs from other
+Standards.
+
+This repository is the Snap standard. It includes customized Sniffs that it
+considers its own, copied originally from the Generic, Squiz and PEAR
+standards, and also pulls in sniffs from Generic, Squiz and Zend via its
+ruleset.xml file.
