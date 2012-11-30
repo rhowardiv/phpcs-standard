@@ -344,7 +344,7 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
             // Array cannot be empty, so this is a multi-line array with
             // a single value. It should be defined on single line.
             $error = 'Multi-line array contains a single value; use single-line array instead';
-            $phpcsFile->addError($error, $stackPtr, 'MulitLineNotAllowed');
+            $phpcsFile->addWarning($error, $stackPtr, 'MulitLineNotAllowed');
             return;
         }
 
