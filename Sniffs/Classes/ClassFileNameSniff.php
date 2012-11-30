@@ -58,17 +58,26 @@ class Snap_Sniffs_Classes_ClassFileNameSniff implements PHP_CodeSniffer_Sniff
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
+        $fullPath = $phpcsFile->getFilename();
+		if (
+			strpos($fullPath, 'tests') !== false
+			&& preg_match('/Mock|Stub/', $phpcsFile->getDeclarationName($stackPtr))
+		) {
+			// allow mocks or stubs to nestle in with tests
+			return;
+		}
+
         $tokens   = $phpcsFile->getTokens();
         $decName  = $phpcsFile->findNext(T_STRING, $stackPtr);
-        $fullPath = basename($phpcsFile->getFilename());
-        $fileName = substr($fullPath, 0, strrpos($fullPath, '.'));
+        $fileName = basename($fullPath);
+        $noext = substr($fileName, 0, strrpos($fileName, '.'));
 
-        if (preg_replace('/^\w+_/', '', $tokens[$decName]['content']) !== $fileName) {
+        if (preg_replace('/^\w+_/', '', $tokens[$decName]['content']) !== $noext) {
             $error = '%s name doesn\'t match filename; expected "%s %s"';
             $data  = array(
                       ucfirst($tokens[$stackPtr]['content']),
                       $tokens[$stackPtr]['content'],
-                      $fileName,
+                      $noext,
                      );
             $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
         }
