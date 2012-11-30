@@ -29,15 +29,15 @@
  * @version   Release: 1.3.4
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Generic_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Sniff
+class Snap_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**
-     * The number of spaces code should be indented.
+     * The number of spaces or tabs code should be indented.
      *
      * @var int
      */
-    public $indent = 4;
+    public $indent = 1;
 
     /**
      * Does the indent need to be exactly right.

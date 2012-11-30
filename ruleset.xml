@@ -25,19 +25,15 @@
 		<!-- No space after unary cast operators -->
 		<exclude name="Generic.Formatting.SpaceAfterCast"/>
 
+		<!-- We have customized this-->
+		<exclude name="Generic.WhiteSpace.ScopeIndent"/>
+
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">
 		<properties>
 			<property name="lineLimit" value="110"/>
 			<property name="absoluteLineLimit" value="0"/>
-		</properties>
-	</rule>
-
-	<!-- with tab indents it's 1 tab per level -->
-	<rule ref="Generic.WhiteSpace.ScopeIndent">
-		<properties>
-			<property name="indent" value="1"/>
 		</properties>
 	</rule>
 
