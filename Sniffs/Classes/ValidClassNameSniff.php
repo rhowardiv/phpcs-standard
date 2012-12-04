@@ -61,13 +61,7 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 			return;
 		}
 
-		// Determine the name of the class or interface. Note that we cannot
-		// simply look for the first T_STRING because a class name
-		// starting with the number will be multiple tokens.
-		$opener    = $tokens[$stackPtr]['scope_opener'];
-		$nameStart = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), $opener, true);
-		$nameEnd   = $phpcsFile->findNext(T_WHITESPACE, $nameStart, $opener);
-		$name      = trim($phpcsFile->getTokensAsString($nameStart, ($nameEnd - $nameStart)));
+		$name = $phpcsFile->getDeclarationName($stackPtr);
 
 		// Check for camel caps format.
 		// ... but allow underscores for filepathing
@@ -82,8 +76,48 @@ class Snap_Sniffs_Classes_ValidClassNameSniff implements PHP_CodeSniffer_Sniff
 			$phpcsFile->addError($error, $stackPtr, 'NotCamelCaps', $data);
 		}
 
+		$this->checkBraceSpacing($phpcsFile, $stackPtr);
+		$this->checkBraceLine($phpcsFile, $stackPtr);
 	}
 
+	/**
+	 * Check the brace that opens the class is properly positioned
+	 * @param PHP_CodeSniffer_File $phpcsFile
+	 * @param int $stackPtr
+	 */
+	protected function checkBraceSpacing(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
+		$tokens = $phpcsFile->getTokens();
+		$opener = $tokens[$stackPtr]['scope_opener'];
+		$i = $opener - 1;
+		$space_count = 0;
+		while ($tokens[$i]['content'] === ' ') {
+			$space_count++;
+			$i--;
+		}
+		if ($space_count !== 1) {
+			$phpcsFile->addError(
+				'1 space expected before opening brace; %d found',
+				$stackPtr,
+				'BadSpaceBeforeClassBrace',
+				array($space_count)
+			);
+		}
+	}
 
-}//end class
-
+	/**
+	 * Check the brace is on the same line as the class/interface declaration
+	 * @param PHP_CodeSniffer_File $phpcsFile
+	 * @param int $stackPtr
+	 */
+	protected function checkBraceLine(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
+		$tokens = $phpcsFile->getTokens();
+		$opener = $tokens[$stackPtr]['scope_opener'];
+		if ($tokens[$stackPtr]['line'] != $tokens[$opener]['line']) {
+			$phpcsFile->addError(
+				'Opening brace must be on same line as class declaration',
+				$stackPtr,
+				'ClassBraceWrongLine'
+			);
+		}
+	}
+}

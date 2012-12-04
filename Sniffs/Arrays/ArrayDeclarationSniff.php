@@ -344,7 +344,7 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
             // Array cannot be empty, so this is a multi-line array with
             // a single value. It should be defined on single line.
             $error = 'Multi-line array contains a single value; use single-line array instead';
-            $phpcsFile->addError($error, $stackPtr, 'MulitLineNotAllowed');
+            $phpcsFile->addWarning($error, $stackPtr, 'MulitLineNotAllowed');
             return;
         }
 
@@ -359,38 +359,17 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
                );
         */
 
-        if ($keyUsed === false && empty($indices) === false) {
+		if ($indices) {
             $count     = count($indices);
             $lastIndex = $indices[($count - 1)]['value'];
 
-            $trailingContent = $phpcsFile->findPrevious(T_WHITESPACE, ($arrayEnd - 1), $lastIndex, true);
+            $trailingContent = $phpcsFile->findPrevious(array(T_COMMENT, T_WHITESPACE), ($arrayEnd - 1), $lastIndex, true);
             if ($tokens[$trailingContent]['code'] !== T_COMMA) {
-                $error = 'Comma required after last value in array declaration';
-                $phpcsFile->addError($error, $trailingContent, 'NoCommaAfterLast');
+                $error = 'Consider adding a comma after last value in array declaration';
+                $phpcsFile->addWarning($error, $trailingContent, 'NoCommaAfterLast');
             }
 
-            foreach ($indices as $value) {
-                if (empty($value['value']) === true) {
-                    // Array was malformed and we couldn't figure out
-                    // the array value correctly, so we have to ignore it.
-                    // Other parts of this sniff will correct the error.
-                    continue;
-                }
-
-                if ($tokens[($value['value'] - 1)]['code'] === T_WHITESPACE) {
-                    // A whitespace token before this value means that the value
-                    // was indented and not flush with the opening parenthesis.
-                    if ($tokens[$value['value']]['column'] !== ($keywordStart + 1)) {
-                        $error = 'Array value not aligned correctly; expected %s spaces but found %s';
-                        $data  = array(
-                                  ($keywordStart + 1),
-                                  $tokens[$value['value']]['column'],
-                                 );
-                        //$phpcsFile->addError($error, $value['value'], 'ValueNotAligned', $data);
-                    }
-                }
-            }
-        }//end if
+		}
 
         /*
             Below the actual indentation of the array is checked.
@@ -425,7 +404,6 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
                     $error = 'The first value in a multi-value array must be on a new line';
                     $phpcsFile->addError($error, $stackPtr, 'FirstValueNoNewline');
                 }
-
                 continue;
             }
 
@@ -433,41 +411,6 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
                 $error = 'The first index in a multi-value array must be on a new line';
                 $phpcsFile->addError($error, $stackPtr, 'FirstIndexNoNewline');
                 continue;
-            }
-
-            if ($tokens[$index['index']]['column'] !== $indicesStart) {
-                $error = 'Array key not aligned correctly; expected %s spaces but found %s';
-                $data  = array(
-                          ($indicesStart - 1),
-                          ($tokens[$index['index']]['column'] - 1),
-                         );
-                //$phpcsFile->addError($error, $index['index'], 'KeyNotAligned', $data);
-                continue;
-            }
-
-            if ($tokens[$index['arrow']]['column'] !== $arrowStart) {
-                $expected = ($arrowStart - (strlen($index['index_content']) + $tokens[$index['index']]['column']));
-                $found    = ($tokens[$index['arrow']]['column'] - (strlen($index['index_content']) + $tokens[$index['index']]['column']));
-
-                $error = 'Array double arrow not aligned correctly; expected %s space(s) but found %s';
-                $data  = array(
-                          $expected,
-                          $found,
-                         );
-                //$phpcsFile->addError($error, $index['arrow'], 'DoubleArrowNotAligned', $data);
-                continue;
-            }
-
-            if ($tokens[$index['value']]['column'] !== $valueStart) {
-                $expected = ($valueStart - (strlen($tokens[$index['arrow']]['content']) + $tokens[$index['arrow']]['column']));
-                $found    = ($tokens[$index['value']]['column'] - (strlen($tokens[$index['arrow']]['content']) + $tokens[$index['arrow']]['column']));
-
-                $error = 'Array value not aligned correctly; expected %s space(s) but found %s';
-                $data  = array(
-                          $expected,
-                          $found,
-                         );
-                //$phpcsFile->addError($error, $index['arrow'], 'ValueNotAligned', $data);
             }
 
             // Check each line ends in a comma.
@@ -484,11 +427,6 @@ class Snap_Sniffs_Arrays_ArrayDeclarationSniff implements PHP_CodeSniffer_Sniff
                         $nextComma = $i;
                         break;
                     }
-                }
-
-                if (($nextComma === false) || ($tokens[$nextComma]['line'] !== $tokens[$index['value']]['line'])) {
-                    $error = 'Each line in an array declaration must end in a comma';
-                    $phpcsFile->addError($error, $index['value'], 'NoComma');
                 }
 
                 // Check that there is no space before the comma.

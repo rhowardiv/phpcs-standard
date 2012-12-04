@@ -49,7 +49,13 @@ class Snap_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 	 *
 	 * @var string
 	 */
-	private static $underscore_var = '/[a-z](?:[a-z0-9]+_?)*/';
+	private static $underscore_var = '/^(_|[a-z](?:_?[a-z0-9]+)*)$/';
+
+	/**
+	 * Complementary regex to just exclude camel casing
+	 * @var string
+	 */
+	private static $camelcase = '/[a-z][A-Z]/';
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -81,6 +87,15 @@ class Snap_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
         if (in_array($varName, $phpReservedVars) === true) {
             return;
         }
+
+		if ($tokens[$stackPtr - 1]['code'] === T_PAAMAYIM_NEKUDOTAYIM) {
+			// static vars just ensure no camelcase (caps allowed)
+			if (preg_match(self::$camelcase, $varName)) {
+				$error = 'Variable "%s" is not in valid underscore format';
+				$phpcsFile->addError($error, $stackPtr, 'NotUnderscore', array($varName));
+			}
+			return;
+		}
 
         $objOperator = $phpcsFile->findNext(array(T_WHITESPACE), ($stackPtr + 1), null, true);
         if ($tokens[$objOperator]['code'] === T_OBJECT_OPERATOR) {
@@ -134,28 +149,12 @@ class Snap_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
             return;
         }
 
-        $public    = ($memberProps['scope'] !== 'private');
         $errorData = array($varName);
 
-        if ($public === true) {
-            if (substr($varName, 0, 1) === '_') {
-                $error = '%s member variable "%s" must not contain a leading underscore';
-                $data  = array(
-                          ucfirst($memberProps['scope']),
-                          $errorData[0],
-                         );
-                $phpcsFile->addError($error, $stackPtr, 'PublicHasUnderscore', $data);
-                return;
-            }
-        } else {
-            if (substr($varName, 0, 1) !== '_') {
-                $error = 'Private member variable "%s" must contain a leading underscore';
-                //$phpcsFile->addError($error, $stackPtr, 'PrivateNoUnderscore', $errorData);
-                return;
-            }
-        }
-
-        if (preg_match(self::$underscore_var, $varName) === 0) {
+		if (
+			($memberProps['is_static'] && preg_match(self::$camelcase, $varName))
+			|| (!$memberProps['is_static'] && preg_match(self::$underscore_var, $varName) === 0)
+		) {
             $error = 'Variable "%s" is not in valid underscore format';
             $phpcsFile->addError($error, $stackPtr, 'MemberNotUnderscore', $errorData);
         }

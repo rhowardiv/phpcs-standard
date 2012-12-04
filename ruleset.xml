@@ -22,9 +22,11 @@
 		<!-- Don't require pretty alignment in successive assignments -->
 		<exclude name="Generic.Formatting.MultipleStatementAlignment"/>
 
-		<!-- Allow space or no space after cast operators -->
+		<!-- No space after unary cast operators -->
 		<exclude name="Generic.Formatting.SpaceAfterCast"/>
-		<exclude name="Generic.Formatting.NoSpaceAfterCast"/>
+
+		<!-- We have customized this-->
+		<exclude name="Generic.WhiteSpace.ScopeIndent"/>
 
 	</rule>
 
@@ -32,13 +34,6 @@
 		<properties>
 			<property name="lineLimit" value="110"/>
 			<property name="absoluteLineLimit" value="0"/>
-		</properties>
-	</rule>
-
-	<!-- with tab indents it's 1 tab per level -->
-	<rule ref="Generic.WhiteSpace.ScopeIndent">
-		<properties>
-			<property name="indent" value="1"/>
 		</properties>
 	</rule>
 
@@ -70,7 +65,6 @@
 	<rule ref="Squiz.WhiteSpace.CastSpacing"/>
 	<rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
 	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
-	<rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
 	<rule ref="Squiz.WhiteSpace.ScopeClosingBrace"/>
 	<rule ref="Squiz.WhiteSpace.ScopeKeywordSpacing"/>
 	<rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
