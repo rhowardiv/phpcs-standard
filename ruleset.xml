@@ -16,6 +16,9 @@
 		<!-- Use lowercase true, false and null. -->
 		<exclude name="Generic.PHP.UpperCaseConstant"/>
 
+		<!-- Don't enforce closing tags -->
+		<exclude name="Generic.PHP.ClosingPHPTag"/> 
+
 		<!-- Use K&R style -->
 		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
 
@@ -27,7 +30,6 @@
 
 		<!-- We have customized this-->
 		<exclude name="Generic.WhiteSpace.ScopeIndent"/>
-
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">
