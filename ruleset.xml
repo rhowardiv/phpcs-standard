@@ -7,6 +7,12 @@
 		<!-- Once our codebase is converted to LF EOL remove this -->
 		<exclude name="Generic.Files.LineEndings"/>
 
+		<!-- Don't enforce one class per file todo: enforce but not in tests -->
+		<exclude name="Generic.Files.OneClassPerFile"/>
+
+		<!-- Don't enforce new line at end of file -->
+		<exclude name="Generic.Files.EndFileNewline"/>
+
 		<!-- TODOs are allowed -->
 		<exclude name="Generic.Commenting.Todo"/>
 
@@ -15,6 +21,9 @@
 
 		<!-- Use lowercase true, false and null. -->
 		<exclude name="Generic.PHP.UpperCaseConstant"/>
+
+		<!-- Don't enforce closing tags -->
+		<exclude name="Generic.PHP.ClosingPHPTag"/> 
 
 		<!-- Use K&R style -->
 		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
@@ -27,7 +36,6 @@
 
 		<!-- We have customized this-->
 		<exclude name="Generic.WhiteSpace.ScopeIndent"/>
-
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">
