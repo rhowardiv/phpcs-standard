@@ -10,8 +10,9 @@
 		<!-- Don't enforce one class per file todo: enforce but not in tests -->
 		<exclude name="Generic.Files.OneClassPerFile"/>
 
-		<!-- Don't enforce new line at end of file -->
+		<!-- Don't enforce (no/)new line at end of file -->
 		<exclude name="Generic.Files.EndFileNewline"/>
+		<exclude name="Generic.Files.EndFileNoNewline"/>
 
 		<!-- TODOs are allowed -->
 		<exclude name="Generic.Commenting.Todo"/>
