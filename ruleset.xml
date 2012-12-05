@@ -7,6 +7,9 @@
 		<!-- Once our codebase is converted to LF EOL remove this -->
 		<exclude name="Generic.Files.LineEndings"/>
 
+		<!-- Don't enforce one class per file todo: enforce but not in tests -->
+		<exclude name="Generic.Files.OneClassPerFile"/>
+
 		<!-- TODOs are allowed -->
 		<exclude name="Generic.Commenting.Todo"/>
 
